@@ -1,0 +1,55 @@
+unit Projt_estudos.ComponentsWeb.DataTables;
+
+interface
+
+uses
+  System.Classes, System.SysUtils;
+
+   function Create_HTML_Table(ID:String; Fields:TStringList; cTable:Boolean; cStriped:Boolean; cBordered:Boolean; cHover:Boolean; cSm:Boolean; Style:string; Action:Boolean) :string;
+   function Create_script_DataTable(ID:string; TagScript:Boolean; Responsivo:Boolean; pageLength:LongInt; cdnLanguage:string; paging:Boolean; ordering :Boolean; searching:Boolean; serverSide:Boolean; processing:Boolean):string;
+
+implementation
+
+function Create_HTML_Table(ID:String; Fields:TStringList; cTable:Boolean; cStriped:Boolean; cBordered:Boolean; cHover:Boolean; cSm:Boolean; Style:string; Action:Boolean) :string;
+var
+ I    : LongInt;
+ Tb_Class, Tb_style, Tb_HTML :string;
+begin
+  Tb_style := Style;
+
+  if Length(Tb_style) = 0 then
+    Tb_Style:='width:100%';
+
+  Tb_Class :='table';
+
+  if cStriped then
+    Tb_Class := Tb_Class + 'table-striped';
+
+  if cBordered then
+    Tb_Class := Tb_Class + 'table-cBordered';
+
+  if cHover then
+    Tb_Class := Tb_Class + 'table-hover';
+
+  if cSm then
+    Tb_Class := Tb_Class + 'table-sm';
+
+  Tb_HTML := Tb_HTML + '<tr>                    ';
+
+  for I := 0 to Fields.Count-1 do begin
+
+    Tb_HTML := Tb_HTML +'  <th>' + Fields[I]+'</th> ';
+  end;
+
+  if Action then
+    Tb_HTML := Tb_HTML + '     <th>Ação</th>        ';
+
+  Tb_HTML := Tb_HTML + ' </tr>                      ';
+
+  Result := ' <table id="'+ID+'" class="'+Tb_Class+'" style="'+ Tb_style+'"> '+
+            '   <thead>                                                     '+
+                      Tb_HTML                                                +
+            '   </thead>                                                    '+
+            ' </table>                                                      ';
+
+end.

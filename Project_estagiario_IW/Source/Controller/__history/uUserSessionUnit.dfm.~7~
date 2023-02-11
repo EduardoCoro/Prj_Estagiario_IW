@@ -1,0 +1,15 @@
+object IWUserSession: TIWUserSession
+  OldCreateOrder = False
+  OnCreate = IWUserSessionBaseCreate
+  Height = 347
+  Width = 556
+  object Conexao: TFDConnection
+    ConnectionName = 'Conexao'
+    Left = 136
+    Top = 88
+  end
+  object MySQL: TFDPhysMySQLDriverLink
+    Left = 224
+    Top = 104
+  end
+end

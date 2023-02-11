@@ -1,0 +1,87 @@
+unit uUserSessionUnit;
+
+{
+  This is a DataModule where you can add components or declare fields that are specific to 
+  ONE user. Instead of creating global variables, it is better to use this datamodule. You can then
+  access the it using UserSession.
+}
+interface
+
+uses
+  IWUserSessionBase, SysUtils, Classes;
+
+type
+  TIWUserSession = class(TIWUserSessionBase)
+    procedure IWUserSessionBaseCreate(Sender: TObject);
+  private
+    { Private declarations }
+    FUserEmail: String;
+    FUserId: LongInt;
+    FUserLogado: String;
+    FDescPageHead: String;
+    FAcaoPageHead: String;
+    FID_Cadastro: LongInt;
+
+    procedure SetUserEmail(const Value: String);
+    procedure SetUserId(const Value: LongInt);
+    procedure SetUserLogado(const Value: String);
+
+    procedure SetDescPageHead(const Value: String);
+    procedure SetAcaoPageHead(const Value: String);
+    procedure SetID_Cadastro(const Value: LongInt);
+  public
+    { Public declarations }
+
+    Property UserId:LongInt read FUserId write SetUserId;
+    Property UserLogado:String read FUserLogado write SetUserLogado;
+    Property UserEmail:String read FUserEmail write SetUserEmail;
+
+    Property DescPageHead :string read FDescPageHead write SetDescPageHead;
+    Property AcaoPageHead :string read FAcaoPageHead write SetAcaoPageHead;
+
+
+  end;
+
+implementation
+
+{$R *.dfm}
+uses uServerController;
+
+
+
+procedure TIWUserSession.IWUserSessionBaseCreate(Sender: TObject);
+begin
+  FAcaoPageHead := '';
+end;
+
+procedure TIWUserSession.SetAcaoPageHead(const Value: String);
+begin
+  FAcaoPageHead := Value;
+end;
+
+procedure TIWUserSession.SetDescPageHead(const Value: String);
+begin
+  FDescPageHead := Value;
+end;
+
+procedure TIWUserSession.SetID_Cadastro(const Value: LongInt);
+begin
+  FID_Cadastro := Value;
+end;
+
+procedure TIWUserSession.SetUserEmail(const Value: String);
+begin
+  FUserEmail := Value;
+end;
+
+procedure TIWUserSession.SetUserId(const Value: LongInt);
+begin
+  FUserId := Value;
+end;
+
+procedure TIWUserSession.SetUserLogado(const Value: String);
+begin
+  FUserLogado := Value;
+end;
+
+end.

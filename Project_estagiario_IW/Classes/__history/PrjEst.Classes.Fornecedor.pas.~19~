@@ -1,0 +1,367 @@
+unit Fornecedor;
+
+interface
+
+uses     //units(funções e eventos) a serem utilizadas
+  Proj_estudos.App, Projt_estudos.SweetAlert2,
+
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf,
+  FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.stan.Pool, FireDAC.Stan.Async,
+  FireDAC.Phys, FireDAC.vclui.Wait, FireDAC.stan.Param, FireDAC.DatS, FireDAC.DApt.Intf,
+  FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet, FireDAC.comp.Client, FireDAC.Phys.MySQLDef,
+  FireDAC.phys.MySQL;
+
+type
+
+
+  TFornecedor = class
+  //declaração das propriedades da classe
+  //com os respectivos gets e sets
+  private
+    FLogradouro: String;
+    FObservacao: String;
+    FCnpj: String;
+    FEmail: String;
+    FBairro: String;
+    FUF: String;
+    FCodigo: Longint;
+    FCEP: String;
+    FDataAlteracao: TDate;
+    FNumero: String;
+    FEmailFin: String;
+    FComplemento: String;
+    FContato: String;
+    FDataCadastro: TDate;
+    FNome: String;
+    FCidade: String;
+    FTelefone: String;
+    FCelular: String;
+    //inserção de set das propriedades da classe
+    //utilizar set para gravamento
+    procedure SetBairro(const Value: String);
+    procedure SetCelular(const Value: String);
+    procedure SetCEP(const Value: String);
+    procedure SetCidade(const Value: String);
+    procedure SetCnpj(const Value: String);
+    procedure SetCodigo(const Value: Longint);
+    procedure SetComplemento(const Value: String);
+    procedure SetContato(const Value: String);
+    procedure SetDataAlteracao(const Value: TDate);
+    procedure SetDataCadastro(const Value: TDate);
+    procedure SetEmail(const Value: String);
+    procedure SetEmailFin(const Value: String);
+    procedure SetLogradouro(const Value: String);
+    procedure SetNome(const Value: String);
+    procedure SetNumero(const Value: String);
+    procedure SetObservacao(const Value: String);
+    procedure SetTelefone(const Value: String);
+    procedure SetUF(const Value: String);
+
+    published
+
+      Property Codigo          : Longint read FCodigo write SetCodigo;
+      Property DataAlteracao   : TDate  read FDataAlteracao write SetDataAlteracao;
+      Property DataCadastro    : TDate  read FDataCadastro write SetDataCadastro;
+      Property Nome            : String  read FNome write SetNome;
+      Property Cnpj            : String  read FCnpj write SetCnpj;
+      Property CEP             : String  read FCEP write SetCEP;
+      Property Cidade          : String  read FCidade write SetCidade;
+      Property UF              : String  read FUF write SetUF;
+      Property Logradouro      : String  read FLogradouro write SetLogradouro;
+      Property Numero          : String  read FNumero write SetNumero;
+      Property Bairro          : String  read FBairro write SetBairro;
+      Property Complemento     : String  read FComplemento write SetComplemento;
+      Property Telefone        : String  read FTelefone write SetTelefone;
+      Property Celular         : String  read FCelular write SetCelular;
+      Property Contato         : String  read FContato write SetContato;
+      Property Email           : String  read FEmail write SetEmail;
+      Property EmailFin        : String  read FEmailFin write SetEmailFin;
+      Property Observacao      : String  read FObservacao write SetObservacao;
+
+  Public
+
+    constructor create;
+    //Destructor Destroy: override;
+
+
+  end;
+  //cricação da classe
+  //será utilizada para execução com o banco - get e set;
+ TFornecedorDB= class
+  private
+    //Function Tabela_Existe(NomeTabela:string):Boolean;
+  public
+    // no construtor create será criada a conexao
+    Constructor Create(Conexao:TFDConnection);
+    Destructor  Destroy; Override;
+    //criação do get e set
+    //para utilização com o banco de dados
+    Function GetFornecedor(Cod_Fornecedor: LongInt; vResult: string): TFornecedor;
+    Function SetFornecedor(Fornecedor: TFornecedor; vResult: string): Boolean;
+
+  end;
+
+  var
+   Conn : TFDConnection;  //declaração da variavel com o tipo de conexão personalizada - TFDCustomConnection
+
+implementation
+
+uses                 //declaração das units
+  System.SysUtils;
+
+{ TFornecedor }
+
+constructor TFornecedor.Create;
+begin       //declaração de var
+  FCodigo       := -1;
+  FDataCadastro := date;
+  FNome         := '';
+end;
+
+constructor TFornecedorDB.Create(Conexao: TFDConnection);
+begin
+  //será verificada se criou os metodos de conexao
+  // atribuindo na variavel a classe do tipo conexao
+  if not Assigned(Conn) then
+    Conn := TFDConnection.Create(nil);
+
+  Conn := Conexao;
+end;
+
+destructor TFornecedorDB.Destroy;
+begin
+ // Conn.Free;
+  inherited;
+end;
+
+// função de pegar elemtento do banco de dados
+// atraves de uma passagem de parametro com o respectivo codigo de cadastro
+Function TFornecedorDB.GetFornecedor(Cod_Fornecedor: LongInt; vResult: string): TFornecedor;
+var
+  Qry : TFDQuery;          //declarando a query
+  Dados : TFornecedor;     //declarando do tipo classe
+begin
+  // inicializando os valores
+  Qry := TFDQuery.Create(nil);
+  Qry.Connection := Conn;
+
+  //passagem de instrução sql
+  Qry.SQL.Add('SELECT * FROM FORNECEDOR');
+  Qry.SQL.Add('WHERE COD_FORNECEDOR =:CODIGO');
+  //com o recurso do comando, o valor será aderido ao instrução sql
+  Qry.ParamByName('CODIGO').AsInteger := Cod_Fornecedor;
+
+  try   // tratamento de erro
+    Qry.Open;  //executando a query com os comandos sql de consulta
+
+    if not Qry.IsEmpty then    // se não estiver vazia os resultados da query
+    begin
+      Dados := TFornecedor.Create;  // criação da classe Pessoa
+      //pegando os valores do select da query
+      // com os repectivos campos da tabela
+      Dados.Codigo := Qry.FieldByName('COD_FORNECEDOR').AsInteger;
+      Dados.Nome   := Qry.FieldByName('FORNECEDOR_NOME').AsString;
+
+      Result := Dados; //retornando a função, passando a classe com os valores
+    end;
+
+  except
+
+  end;
+
+  Qry.Free;    // finalizando a query
+end;
+
+//função de salvar  os respectivos valores no banco de dados
+// na função passara a classe com os valores
+// com ela será utilizada para passagem de dados aos comandos
+Function TFornecedorDB.SetFornecedor(Fornecedor: TFornecedor; vResult: string): Boolean;
+var
+  Qry : TFDQuery;     //declarando a query
+begin
+  Result := False;
+
+  //criando a conexão e a query
+  Qry := TFDQuery.Create(nil);
+  Qry.Connection := Conn;
+
+  //instruções de sql sendo adicionadas
+  //passagem de instrução sql de inserção de dados
+  Qry.SQL.Add('INSERT INTO FORNECEDOR (');
+  Qry.SQL.Add(' FORNECEDOR_DATACADASTRO, FORNECEDOR_NOME,');
+  Qry.SQL.Add(' FORNECEDOR_CNPJ, ');
+  Qry.SQL.Add(' FORNECEDOR_CEP, FORNECEDOR_LOGRADOURO, ');
+  Qry.SQL.Add(' FORNECEDOR_BAIRRO, FORNECEDOR_NUMERO, ');
+  Qry.SQL.Add(' FORNECEDOR_COMPLEMENTO, ');
+  Qry.SQL.Add(' FORNECEDOR_UF,');
+  Qry.SQL.Add(' FORNECEDOR_CIDADE, ');
+  Qry.SQL.Add(' FORNECEDOR_TELEFONE, FORNECEDOR_CELULAR, ');
+  Qry.SQL.Add(' FORNECEDOR_CONTATO, FORNECEDOR_EMAIL, ');
+  Qry.SQL.Add(' FORNECEDOR_EMAILFIN, FORNECEDOR_OBSERVACAO ');
+  Qry.SQL.Add(')' );
+
+  Qry.SQL.Add('VALUES');
+  Qry.SQL.Add('(:FORNECEDOR_DATACADASTRO, :FORNECEDOR_NOME ,');
+  Qry.SQL.Add(' :FORNECEDOR_CNPJ,');
+  Qry.SQL.Add(' :FORNECEDOR_CEP , :FORNECEDOR_LOGRADOURO, ');
+  Qry.SQL.Add(' :FORNECEDOR_BAIRRO, :FORNECEDOR_NUMERO ,');
+  Qry.SQL.Add(' :FORNECEDOR_COMPLEMENTO ,');
+  Qry.SQL.Add(' :FORNECEDOR_UF ,');
+  Qry.SQL.Add(' :FORNECEDOR_CIDADE,');
+  Qry.SQL.Add(' :FORNECEDOR_TELEFONE, :FORNECEDOR_CELULAR ,');
+  Qry.SQL.Add(' :FORNECEDOR_CONTATO, :FORNECEDOR_EMAIL ,');
+  Qry.SQL.Add(' :FORNECEDOR_EMAILFIN, :FORNECEDOR_OBSERVACAO');
+
+  Qry.SQL.Add(' )');
+
+  //com o recurso do comando, o valor será aderido ao instrução sql
+  // de acordo com o campo da tabela, passado os valores presentes na classe, atribuição...
+  Qry.ParamByName('FORNECEDOR_DATACADASTRO').AsDateTime  := Fornecedor.DataCadastro;
+  Qry.ParamByName('FORNECEDOR_NOME').AsString            := Fornecedor.Nome;
+  Qry.ParamByName('FORNECEDOR_CNPJ').AsString            := Fornecedor.CNPJ;
+  Qry.ParamByName('FORNECEDOR_CEP').AsString             := Fornecedor.CEP;
+  Qry.ParamByName('FORNECEDOR_LOGRADOURO').AsString      := Fornecedor.Logradouro;
+  Qry.ParamByName('FORNECEDOR_BAIRRO').AsString          := Fornecedor.Bairro;
+  Qry.ParamByName('FORNECEDOR_NUMERO').AsString          := Fornecedor.Numero;
+  Qry.ParamByName('FORNECEDOR_COMPLEMENTO').AsString     := Fornecedor.Complemento;
+  Qry.ParamByName('FORNECEDOR_UF').AsString              := Fornecedor.UF;
+  Qry.ParamByName('FORNECEDOR_CIDADE').AsString          := Fornecedor.Cidade;
+  Qry.ParamByName('FORNECEDOR_TELEFONE').AsString        := Fornecedor.Telefone;
+  Qry.ParamByName('FORNECEDOR_CELULAR').AsString         := Fornecedor.Celular;
+  Qry.ParamByName('FORNECEDOR_CONTATO').AsString         := Fornecedor.Contato;
+  Qry.ParamByName('FORNECEDOR_EMAIL').AsString           := Fornecedor.Email;
+  Qry.ParamByName('FORNECEDOR_EMAILFIN').AsString        := Fornecedor.EmailFin;
+  Qry.ParamByName('FORNECEDOR_OBSERVACAO').AsString      := Fornecedor.Observacao;
+
+  try   //tratamento de erro
+    Qry.ExecSQL;    //execução da instrução sql
+    Result := True;   // retornando verdadeiro caso ocorra nenhum erro.
+  except    // quando o try possui erro, passagem de erro no escopo
+    vResult := 'Erro na gravacao dos dados DE FORNECEDOR';
+  end;
+
+  Qry.Free;  //liberação ou encerramento da variavel do tipo conecxao ou query
+end;
+
+{
+function TFornecedorDB.Tabela_Existe(NomeTabela: string): Boolean;
+var
+  Qry : TFDQuery;
+begin
+
+  Result := False;
+
+  Qry := TFDQuery.Create(nil);
+  Qry.Connection := Conn;
+
+  Qry.SQL.Add(' SELECT table_name FROM information_schema.tables ');
+  Qry.SQL.Add(' WHERE table_schema = '''+DataBase+''' AND TABLE_NAME = '''+NomeTabela+'''');
+
+  try
+    Qry.Open;
+
+    if not Qry.IsEmpty then
+      Result := True;
+
+  except
+
+  end;
+
+  Qry.Free;
+end;  }
+
+// restante comandos de procedure derivado ao set, de acordo com
+// as propriedades das classes criadas
+
+procedure TFornecedor.SetBairro(const Value: String);
+begin
+  FBairro := Value;
+end;
+
+procedure TFornecedor.SetCelular(const Value: String);
+begin
+  FCelular := Value;
+end;
+
+procedure TFornecedor.SetCEP(const Value: String);
+begin
+  FCEP := Value;
+end;
+
+procedure TFornecedor.SetCidade(const Value: String);
+begin
+  FCidade := Value;
+end;
+
+procedure TFornecedor.SetCnpj(const Value: String);
+begin
+  FCnpj := Value;
+end;
+
+procedure TFornecedor.SetCodigo(const Value: Longint);
+begin
+  FCodigo := Value;
+end;
+
+procedure TFornecedor.SetComplemento(const Value: String);
+begin
+  FComplemento := Value;
+end;
+
+procedure TFornecedor.SetContato(const Value: String);
+begin
+  FContato := Value;
+end;
+
+procedure TFornecedor.SetDataAlteracao(const Value: TDate);
+begin
+  FDataAlteracao := Value;
+end;
+
+procedure TFornecedor.SetDataCadastro(const Value: TDate);
+begin
+  FDataCadastro := Value;
+end;
+
+procedure TFornecedor.SetEmail(const Value: String);
+begin
+  FEmail := Value;
+end;
+
+procedure TFornecedor.SetEmailFin(const Value: String);
+begin
+  FEmailFin := Value;
+end;
+
+procedure TFornecedor.SetLogradouro(const Value: String);
+begin
+  FLogradouro := Value;
+end;
+
+procedure TFornecedor.SetNome(const Value: String);
+begin
+  FNome := Value;
+end;
+
+procedure TFornecedor.SetNumero(const Value: String);
+begin
+  FNumero := Value;
+end;
+
+procedure TFornecedor.SetObservacao(const Value: String);
+begin
+  FObservacao := Value;
+end;
+
+procedure TFornecedor.SetTelefone(const Value: String);
+begin
+  FTelefone := Value;
+end;
+
+procedure TFornecedor.SetUF(const Value: String);
+begin
+  FUF := Value;
+end;
+
+end.
+

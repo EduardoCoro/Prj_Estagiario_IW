@@ -1,0 +1,17 @@
+Desafio IntraWeb Focus
+
+- Criar as units e as marcações (HTML) e estilos (CSS)
+Para Fornecedor e Pessoa.
+- Colocar os componentes na Unit e declarar na page Html.
+- Ordenar o Tab dos componentes.
+Opcional:
+ - Fazer a divisao da page utilizando a class: .card
+- Configurar o Menu Geral e a Unit Padrão.
+
+
+Obs: O chamamento das páginas Web, já estão pré configuradas, ou seja,
+você precisará configurar o ,callback, que é o menu e o Padrao para poder chamar as page que criou.
+Dica: As aulas de IW ajuda bastante!
+
+
+-- Bons estudos e Boa sorte!

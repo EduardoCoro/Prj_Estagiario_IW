@@ -1,0 +1,17 @@
+unit Proj_estudos.App;
+
+interface
+  const
+
+  DataBase      = 'Prj_estudos';
+  UserDataBase  = 'root';
+  PassDataBase  = 'root';
+
+  Host          = '127.0.0.1';
+  Driver        = 'mysql';
+  Porta         = 3306;
+
+
+implementation
+
+end.

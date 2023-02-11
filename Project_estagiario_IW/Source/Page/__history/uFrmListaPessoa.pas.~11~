@@ -1,0 +1,59 @@
+unit uFrmListaPessoa;
+
+interface
+
+uses
+
+  Projt_estudos.ComponentsWeb, Projt_estudos.ComponentsWeb.DataTables,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Padrao, IWVCLComponent,
+  IWBaseLayoutComponent, IWBaseContainerLayout, IWContainerLayout,
+  IWTemplateProcessorHTML;
+
+type
+  TFrmListaPessoa = class(TTpadrao)
+    procedure IWAppFormCreate(Sender: TObject);
+    procedure TPSUnknownTag(const AName: string; var VValue: string);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmListaPessoa: TFrmListaPessoa;
+
+implementation
+
+uses
+  uServerController;
+
+{$R *.dfm}
+
+procedure TFrmListaPessoa.IWAppFormCreate(Sender: TObject);
+begin
+  inherited;
+  ID_DataTable := 'LP';
+
+  UserSession.DescPageHead := 'Lista Pessoa';
+  UserSession.AcaoPageHead := 'Lista';
+end;
+
+procedure TFrmListaPessoa.TPSUnknownTag(const AName: string;
+  var VValue: string);
+begin
+  inherited;
+  if AName = 'LIB_CSS_DATATABLE' then
+    VValue := Get_Lib_CSS_DataTable;
+
+  if AName = 'LIB_JS_DATABLE' then
+    VValue :=
+
+  if AName = 'HTML_DATATABLE' then
+    VValue :=
+
+  if AName = 'JS_' then
+
+end;
+
+end.

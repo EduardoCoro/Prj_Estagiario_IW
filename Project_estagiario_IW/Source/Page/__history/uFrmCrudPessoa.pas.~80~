@@ -1,0 +1,178 @@
+unit uFrmCrudPessoa;
+
+interface
+
+uses     // declaração de units
+  PrjEst.Classes.Pessoas,  Projt_estudos.SweetAlert2,
+
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Padrao, IWVCLComponent, IWHTMLTag,
+  IWBaseLayoutComponent, IWBaseContainerLayout, IWContainerLayout,
+  IWTemplateProcessorHTML, IWVCLBaseControl, IWBaseControl, IWBaseHTMLControl,
+  IWControl, IWCompEdit, IWCompListbox, IWCompMemo, IWCompButton,system.DateUtils,
+  IWCompLabel;
+
+type
+  TFrmCrudPessoa = class(TTpadrao)
+    edtcodigo: TIWEdit;
+    edtdataalteracao: TIWEdit;
+    edtcadastro: TIWEdit;
+    edtNome: TIWEdit;
+    CBTIPOPESSOA: TIWComboBox;
+    EDTCNPJ: TIWEdit;
+    edtinscest: TIWEdit;
+    edtinsmun: TIWEdit;
+    edtcep: TIWEdit;
+    edtlogradouro: TIWEdit;
+    edtnumero: TIWEdit;
+    edtcidade: TIWEdit;
+    edtuf: TIWEdit;
+    edtibge: TIWEdit;
+    edtcomplemento: TIWEdit;
+    edtbairro: TIWEdit;
+    edtTelefone: TIWEdit;
+    edtCelular: TIWEdit;
+    edtContato: TIWEdit;
+    edtEmail: TIWEdit;
+    edtemailfinanceiro: TIWEdit;
+    mObservacao: TIWMemo;
+    BTNSALVAR: TIWButton;
+    lblcodigo: TIWLabel;
+    lblDataAlteracao: TIWLabel;
+    procedure IWAppFormCreate(Sender: TObject);
+    procedure mObservacaoHTMLTag(ASender: TObject; ATag: TIWHTMLTag);
+    procedure CBTIPOPESSOAHTMLTag(ASender: TObject; ATag: TIWHTMLTag);
+    procedure BTNSALVARAsyncClick(Sender: TObject; EventParams: TStringList);
+    procedure BTNSALVARHTMLTag(ASender: TObject; ATag: TIWHTMLTag);
+    procedure lblcodigoHTMLTag(ASender: TObject; ATag: TIWHTMLTag);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmCrudPessoa: TFrmCrudPessoa;
+
+implementation
+
+uses             // declaração de unit
+  uServerController;
+
+{$R *.dfm}
+
+procedure TFrmCrudPessoa.BTNSALVARAsyncClick(Sender: TObject;
+  EventParams: TStringList);
+var                          //declaração de var
+  DB      : TPessoa_DB;      //tipo da classe Pessoa_BD
+  Pessoa  : TPessoa;         // tipo da classe Pessoa
+  vResult : String;          // var tipo texto
+  Verifica :boolean;         //  tipo true or false
+begin
+  inherited;
+  DB     := TPessoa_DB.Create(UserSession.Conexao);
+  Pessoa := TPessoa.Create;
+  //WebApplication.CallBackResponse.AddJavaScriptToExecute(swalSuccess('Cadastro','Dados Salvos!'));
+  try
+    //inserção de dados
+    //a classe declarada recebendo de cada propriedade
+    //os valores dentro dos edits, digitado pelo usuario
+
+    Pessoa.DataCadastro := Date;
+    Pessoa.Nome         := edtNome.Text;
+    Pessoa.Cpf          := EDTCNPJ.Text;
+    Pessoa.RG           := edtinscest.Text;
+    Pessoa.CNE          := edtinsmun.Text;
+
+    {
+    Case CBTIPOPESSOA.ItemIndex of
+      0 : Pessoa.Tipo := 'Fisica';
+      1 : Pessoa.Tipo := 'Juridica';
+    end;
+     }
+
+    Pessoa.CEP          := edtcep.Text;
+    Pessoa.Logradouro   := edtlogradouro.Text;
+    Pessoa.Numero       := edtnumero.Text;
+    Pessoa.Complemento  := edtcomplemento.Text;
+    Pessoa.Bairro       := edtbairro.Text;
+    Pessoa.Cidade       := edtcidade.Text;
+    Pessoa.UF           := edtuf.Text;
+    Pessoa.IBGE         := edtibge.Text;
+    Pessoa.Telefone     := edtTelefone.Text;
+    Pessoa.Celular      := edtCelular.Text;
+    Pessoa.Contato      := edtContato.Text;
+    Pessoa.Email        := edtEmail.Text;
+    Pessoa.EmailFin     := edtemailfinanceiro.Text;
+    Pessoa.Observacao   := mObservacao.Text;
+
+
+    //salvar no banco , funcção setFornecedor
+    // irá registrar o cadastro
+
+
+    if not DB.Set_Pessoa(Pessoa, vResult) then
+      WebApplication.ShowMessage(vResult)
+    else
+      WebApplication.CallBackResponse.AddJavaScriptToExecute(swalSuccess('Cadastro','Dados Salvos!'));
+
+  except
+    DB.Free;
+    Pessoa.Free;
+
+  end;
+end;
+
+procedure TFrmCrudPessoa.BTNSALVARHTMLTag(ASender: TObject; ATag: TIWHTMLTag);
+begin
+  inherited;
+  ATag.Add(' type="button" class="btn btn-success" style="float: right;"');
+end;
+
+procedure TFrmCrudPessoa.CBTIPOPESSOAHTMLTag(ASender: TObject;
+  ATag: TIWHTMLTag);
+begin
+  inherited;
+  ATag.Add(' onchange="selecaopessoa();" ');
+end;
+
+procedure TFrmCrudPessoa.IWAppFormCreate(Sender: TObject);
+var
+  DB      : TPessoa_DB;
+  Pessoa  : TPessoa;
+  vResult : String;
+begin
+  inherited;
+  DB     := TPessoa_DB.Create(UserSession.Conexao);
+  Pessoa := TPessoa.Create;
+  try
+    //trasferi pessoa - select id
+    //Pessoa := DB.Get_Pessoa(2,vResult);
+    //edtNome.Text := Pessoa.Nome;
+    edtcadastro.Text := DateToStr(Date());
+
+   // else
+    //  WebApplication.ShowMessage('Dados inseridos');
+  finally
+    DB.Free;
+    Pessoa.Free;
+
+  end;
+
+  UserSession.DescPageHead := 'Cadastro de Pessoa';
+  UserSession.AcaoPageHead := 'Pessoa';
+end;
+
+procedure TFrmCrudPessoa.lblcodigoHTMLTag(ASender: TObject; ATag: TIWHTMLTag);
+begin
+  inherited;
+  //ATag.Add('<label id="lblcodigo">Código</label>');
+end;
+
+procedure TFrmCrudPessoa.mObservacaoHTMLTag(ASender: TObject; ATag: TIWHTMLTag);
+begin
+  inherited;
+  ATag.Add(' rows="3" ');
+end;
+
+end.

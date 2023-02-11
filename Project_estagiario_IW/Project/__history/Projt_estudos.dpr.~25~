@@ -1,0 +1,31 @@
+  program Projt_estudos;
+
+uses
+  FastMM4,
+  IWRtlFix,
+  IWJclStackTrace,
+  IWJclDebug,
+  IWStart,
+  Padrao in '..\Source\Padrao\Padrao.pas' {Tpadrao: TIWAppForm},
+  uServerController in '..\Source\Controller\uServerController.pas' {IWServerController: TIWServerControllerBase},
+  uUserSessionUnit in '..\Source\Controller\uUserSessionUnit.pas' {IWUserSession: TIWUserSessionBase},
+  uFrmLogin in '..\Source\Page\uFrmLogin.pas' {TLogin: TIWAppForm},
+  Template.StarAdmin in '..\Libary\Template.StarAdmin.pas',
+  Projt_estudos.SweetAlert2 in '..\Libary\Projt_estudos.SweetAlert2.pas',
+  uFrmIndex in '..\Source\Page\uFrmIndex.pas' {FrmIndex: TIWAppForm},
+  Projt_estudos.App in '..\Libary\Projt_estudos.App.pas',
+  Projt_estudos.DataBase.MenuApp in '..\Libary\Projt_estudos.DataBase.MenuApp.pas',
+  uFrmListaPessoa in '..\Source\Page\uFrmListaPessoa.pas' {FrmListaPessoa: TIWAppForm},
+  uFrmCrudPessoa in '..\Source\Page\uFrmCrudPessoa.pas' {FrmCrudPessoa: TIWAppForm},
+  PrjEst.Classes.Pessoas in '..\Classes\PrjEst.Classes.Pessoas.pas',
+  Proj_estudos.App in '..\Const\Proj_estudos.App.pas',
+  Projt_estudos.ComponentsWeb in '..\Libary\Projt_estudos.ComponentsWeb.pas',
+  Projt_estudos.ComponentsWeb.DataTables in '..\Libary\Projt_estudos.ComponentsWeb.DataTables.pas',
+  PrjEst.Classes.Fornecedor in '..\Classes\PrjEst.Classes.Fornecedor.pas',
+  uFrmCrudFornecedor in '..\Source\Page\uFrmCrudFornecedor.pas' {FrmCrudFornecedor: TIWAppForm};
+
+{$R *.res}
+
+begin
+  TIWStart.Execute(True);
+end.

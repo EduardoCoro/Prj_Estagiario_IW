@@ -1,0 +1,38 @@
+unit Projt_estudos.ComponentsWeb.DataTables.Callabacks;
+
+interface
+
+uses
+
+  uServerController,
+
+  System.Classes, System.StrUtils, System.SysUtils, FireDAC.Comp.Client;
+
+  function ReturnCountSQL(var Query: TFDQuery): LongInt;
+
+implementation
+
+function ReturnCountSQL(var Query: TFDQuery): LongInt;
+var
+  Qry: TFDquery;
+begin
+  Qry := TFDQuery.Create(nil);
+  Qry.Connection := UserSession.Conexao;
+
+  Qry.Close;
+  Qry.SQL.Clear;
+  Qry.SQL.Add('SELECT COUNT(*) FROM (' + Query.SQL.Text + ') AS TEMP1');
+
+  try
+      Qry.Open;
+      Result := Qry.Fields[0].AsInteger;
+  except
+
+  end;
+
+  Qry.Free;
+end;
+
+
+
+end.

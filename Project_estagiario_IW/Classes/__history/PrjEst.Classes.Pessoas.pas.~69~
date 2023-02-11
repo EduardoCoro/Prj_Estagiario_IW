@@ -1,0 +1,449 @@
+unit PrjEst.Classes.Pessoas;
+
+interface
+
+uses     //units(funções e eventos) a serem utilizadas
+  Proj_estudos.App, Projt_estudos.SweetAlert2,
+
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf,
+  FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.stan.Pool, FireDAC.Stan.Async,
+  FireDAC.Phys, FireDAC.vclui.Wait, FireDAC.stan.Param, FireDAC.DatS, FireDAC.DApt.Intf,
+  FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet, FireDAC.comp.Client, FireDAC.Phys.MySQLDef,
+  FireDAC.phys.MySQL;
+
+type
+
+  TTipoPessoa = (tpFisica, TpJuridica);
+  //declaração das propriedades da classe
+  //com os respectivos gets e sets
+  TPessoa = class
+  private
+    FLogradouro: String;
+    FObservacao: String;
+    FIBGE: String;
+    FRG: String;
+    FEmail: String;
+    FUF: String;
+    FCodigo: Longint;
+    FCpf: String;
+    FCEP: String;
+    FDataAlteracao: TDate;
+    FNumero: String;
+    FEmailFin: String;
+    FComplemento: String;
+    FContato: String;
+    FDataCadastro: TDate;
+    FCNE: String;
+    FNome: String;
+    FCidade: String;
+    FTipo: TTipoPessoa;
+    FTelefone: String;
+    FCelular: String;
+    FBairro: string;
+    //inserção de set das propriedades da classe
+    //utilizar set para gravamento
+    procedure SetCelular(const Value: String);
+    procedure SetCEP(const Value: String);
+    procedure SetCidade(const Value: String);
+    procedure SetCNE(const Value: String);
+    procedure SetCodigo(const Value: Longint);
+    procedure SetComplemento(const Value: String);
+    procedure SetContato(const Value: String);
+    procedure SetCpf(const Value: String);
+    procedure SetDataAlteracao(const Value: TDate);
+    procedure SetDataCadastro(const Value: TDate);
+    procedure SetEmail(const Value: String);
+    procedure SetEmailFin(const Value: String);
+    procedure SetIBGE(const Value: String);
+    procedure SetLogradouro(const Value: String);
+    procedure SetNome(const Value: String);
+    procedure SetNumero(const Value: String);
+    procedure SetObservacao(const Value: String);
+    procedure SetRG(const Value: String);
+    procedure SetTelefone(const Value: String);
+    procedure SetTipo(const Value: TTipoPessoa);
+    procedure SetUF(const Value: String);
+    procedure SetBairro(const Value: string);
+
+  published
+
+    Property Codigo          : Longint read FCodigo write SetCodigo;
+    Property DataAlteracao   : TDate read FDataAlteracao write SetDataAlteracao;
+    Property DataCadastro    : TDate read FDataCadastro write SetDataCadastro;
+    Property Nome            : String read FNome write SetNome;
+    Property Tipo            : TTipoPessoa read FTipo write SetTipo;
+    Property Cpf             : String read FCpf write SetCpf;
+    Property RG              : String read FRG write SetRG;
+    Property CNE             : String read FCNE write SetCNE;
+    Property CEP             : String read FCEP write SetCEP;
+    Property Logradouro      : String read FLogradouro write SetLogradouro;
+    Property Numero          : String read FNumero write SetNumero;
+    property Bairro          : string read FBairro write SetBairro;
+    Property Complemento     : String read FComplemento write SetComplemento;
+    Property UF              : String read FUF write SetUF;
+    Property Cidade          : String read FCidade write SetCidade;
+    Property IBGE            : String read FIBGE write SetIBGE;
+    Property Telefone        : String read FTelefone write SetTelefone;
+    Property Celular         : String read FCelular write SetCelular;
+    Property Contato         : String read FContato write SetContato;
+    Property Email           : String read FEmail write SetEmail;
+    Property EmailFin        : String read FEmailFin write SetEmailFin;
+    Property Observacao      : String read FObservacao write SetObservacao;
+
+  Public
+
+    constructor Create;
+    //Destructor Destroy;
+  end;
+
+  //cricação da classe
+  //será utilizada para execução com o banco - get e set;
+  TPessoa_DB= class
+  private
+    //Function Tabela_Existe(NomeTabela:string):Boolean;
+    //function Cria_Tabela_Pessoa : Boolean;
+  public
+    // no construtor create será criada a conexao
+    Constructor Create(Conexao:TFDConnection);
+    Destructor  Destroy; Override;
+    //criação do get e set
+    //para utilização com o banco de dados
+    Function Get_Pessoa(Cod_Pessoa: LongInt; vResult: string): TPessoa;
+    Function Set_Pessoa(Pessoa: TPessoa; vResult: string): Boolean;
+
+  end;
+
+  var
+   Conn : TFDConnection;  //declaração da variavel com o tipo de conexão personalizada - TFDCustomConnection
+
+implementation
+
+uses                 //declaração das units
+  System.SysUtils;
+
+{ TPessoa }
+
+constructor TPessoa.Create;
+begin
+  FCodigo       := -1;
+  FDataCadastro := date;
+  FNome         := '';
+
+end;
+
+constructor TPessoa_DB.Create(Conexao: TFDConnection);
+begin
+  if not Assigned(Conn) then
+    Conn := TFDConnection.Create(nil);
+
+  Conn := Conexao;
+
+ // if not Tabela_Existe('PESSOA') then
+ //   Cria_Tabela_Pessoa;
+end;
+
+{
+function TPessoa_DB.Cria_Tabela_Pessoa: Boolean;
+var
+  Qry : TFDQuery;
+begin
+
+  Result := False;
+
+  Qry := TFDQuery.Create(nil);
+  Qry.Connection := Conn;
+
+  Qry.SQL.Add(' SELECT table_name FROM information_schema.tables');
+  Qry.SQL.Add(' WHERE table_schema = ');
+
+  Qry.SQL.Add('CREATE TABLE PESSOA( ');
+  Qry.SQL.Add(' ');
+  Qry.SQL.Add(' COD_PESSOA	 INT NOT NULL IDENTITY(1,1), ');
+  Qry.SQL.Add(' PES_DATAALTERACAO DATE NULL, ');
+  Qry.SQL.Add(' PES_DATACADASTRO  DATE NULL, ');
+  Qry.SQL.Add(' PES_NOME          VARCHAR(75) NULL, ');
+  Qry.SQL.Add(' PES_TIPO          VARCHAR(30) NULL, ');
+  Qry.SQL.Add(' PES_CPF           VARCHAR(18) NULL, ');
+  Qry.SQL.Add(' PES_RG            VARCHAR(18) NULL, ');
+  Qry.SQL.Add(' PES_CNE           VARCHAR(25) NULL, ');
+  Qry.SQL.Add(' PES_CEP           VARCHAR(9)  NULL, ');
+  Qry.SQL.Add(' PES_LOGRADOURO    VARCHAR(75) NULL, ');
+  Qry.SQL.Add(' PES_NUMERO        VARCHAR(75) NULL, ');
+  Qry.SQL.Add(' PES_COMPLEMENTO   VARCHAR(75) NULL, ');
+  Qry.SQL.Add(' PES_UF            VARCHAR(2)  NULL, ');
+  Qry.SQL.Add(' PES_CIDADE        VARCHAR(75) NULL, ');
+  Qry.SQL.Add(' PES_IBGE          VARCHAR(2)  NULL, ');
+  Qry.SQL.Add(' PES_TELEFONE      VARCHAR(14) NULL, ');
+  Qry.SQL.Add(' PES_CELULAR       VARCHAR(14) NULL, ');
+  Qry.SQL.Add(' PES_CONTATO       VARCHAR(14) NULL, ');
+  Qry.SQL.Add(' PES_EMAIL         VARCHAR(100) NULL, ');
+  Qry.SQL.Add('	PES_EMAILFIN      VARCHAR(100) NULL, ');
+  Qry.SQL.Add('	PES_OBSERVACAO    VARCHAR(300) NULL, ');
+  Qry.SQL.Add(' ');
+  Qry.SQL.Add('	 CONSTRAINT PK_COD_PESSOA PRIMARY KEY(COD_PESSOA) ');
+  Qry.SQL.Add('  ); ');
+
+  try
+    Qry.Open;
+
+    if not Qry.IsEmpty then
+      Result := True;
+
+  except
+
+  end;
+
+  Qry.Free;
+end;
+}
+
+destructor TPessoa_DB.Destroy;
+begin
+ // Conn.Free;
+  inherited;
+end;
+
+function TPessoa_DB.Get_Pessoa(Cod_Pessoa: LongInt; vResult: string): TPessoa;
+var
+  Qry : TFDQuery;
+  Dados : TPessoa;
+begin
+  Qry := TFDQuery.Create(nil);
+  Qry.Connection := Conn;
+
+  Qry.SQL.Add('SELECT * FROM PESSOA');
+  Qry.SQL.Add('WHERE COD_PESSOA =:CODIGO');
+  Qry.ParamByName('CODIGO').AsInteger := Cod_Pessoa;
+
+  try
+    Qry.Open;
+
+    if not Qry.IsEmpty then
+    begin
+      Dados := TPessoa.Create;
+      Dados.Codigo := Qry.FieldByName('COD_PESSOA').AsInteger;
+      Dados.Nome   := Qry.FieldByName('PES_NOME').AsString;
+
+      Result := Dados;
+    end;
+
+  except
+
+  end;
+
+  Qry.Free;
+end;
+
+function TPessoa_DB.Set_Pessoa(Pessoa: TPessoa; vResult: string): Boolean;
+var
+  Qry : TFDQuery;
+begin
+  Result := False;
+
+  Qry := TFDQuery.Create(nil);
+  Qry.Connection := Conn;
+
+  Qry.SQL.Add('INSERT INTO PESSOA (');
+  Qry.SQL.Add(' PES_DATACADASTRO, PES_NOME,');
+  //Qry.SQL.Add(' PES_TIPO, ');
+  Qry.SQL.Add(' PES_CPF, PES_RG, ');
+  Qry.SQL.Add(' PES_CNE, PES_CEP, PES_LOGRADOURO, ');
+  Qry.SQL.Add(' PES_BAIRRO, PES_NUMERO, ');
+  Qry.SQL.Add(' PES_COMPLEMENTO, ');
+  Qry.SQL.Add(' PES_UF,');
+  Qry.SQL.Add(' PES_CIDADE,PES_IBGE, ');
+  Qry.SQL.Add(' PES_TELEFONE,PES_CELULAR, ');
+  Qry.SQL.Add(' PES_CONTATO,PES_EMAIL, ');
+  Qry.SQL.Add(' PES_EMAILFIN,PES_OBSERVACAO ');
+  Qry.SQL.Add(')' );
+
+  Qry.SQL.Add('VALUES');
+  Qry.SQL.Add('(:PES_DATACADASTRO, :PES_NOME ,');
+  //Qry.SQL.Add(':PES_TIPO,');
+  Qry.SQL.Add(' :PES_CPF, :PES_RG ,');
+  Qry.SQL.Add(' :PES_CNE, :PES_CEP , :PES_LOGRADOURO, ');
+  Qry.SQL.Add(' :PES_BAIRRO, :PES_NUMERO ,');
+  Qry.SQL.Add(' :PES_COMPLEMENTO ,');
+  Qry.SQL.Add(' :PES_UF ,');
+  Qry.SQL.Add(' :PES_CIDADE, :PES_IBGE ,');
+  Qry.SQL.Add(' :PES_TELEFONE, :PES_CELULAR ,');
+  Qry.SQL.Add(' :PES_CONTATO, :PES_EMAIL ,');
+  Qry.SQL.Add(' :PES_EMAILFIN, :PES_OBSERVACAO');
+
+  Qry.SQL.Add(' )');
+
+//  case Pessoa.Tipo of
+//    tpFisica: Qry.ParamByName('PES_TIPO').AsInteger := 0;
+//    TpJuridica: Qry.ParamByName('PES_TIPO').AsInteger := 1;
+//  end;
+
+  Qry.ParamByName('PES_DATACADASTRO').AsDateTime  := Pessoa.DataCadastro;
+  Qry.ParamByName('PES_NOME').AsString            := Pessoa.Nome;
+  //Qry.ParamByName('PES_TIPO').Value              := Pessoa.Tipo;
+  Qry.ParamByName('PES_CPF').AsString             := Pessoa.Cpf;
+  Qry.ParamByName('PES_RG').AsString              := Pessoa.RG;
+  Qry.ParamByName('PES_CNE').AsString             := Pessoa.CNE;
+  Qry.ParamByName('PES_CEP').AsString             := Pessoa.CEP;
+  Qry.ParamByName('PES_LOGRADOURO').AsString     := Pessoa.Logradouro;
+  Qry.ParamByName('PES_BAIRRO').AsString          := Pessoa.Bairro;
+  Qry.ParamByName('PES_NUMERO').AsString          := Pessoa.Numero;
+  Qry.ParamByName('PES_UF').AsString              := Pessoa.UF;
+  Qry.ParamByName('PES_CIDADE').AsString          := Pessoa.Cidade;
+  Qry.ParamByName('PES_IBGE').AsString            := Pessoa.IBGE;
+  Qry.ParamByName('PES_COMPLEMENTO').AsString     := Pessoa.Complemento;
+  Qry.ParamByName('PES_TELEFONE').AsString        := Pessoa.Telefone;
+  Qry.ParamByName('PES_CELULAR').AsString         := Pessoa.Celular;
+  Qry.ParamByName('PES_CONTATO').AsString         := Pessoa.Contato;
+  Qry.ParamByName('PES_EMAIL').AsString           := Pessoa.Email;
+  Qry.ParamByName('PES_EMAILFIN').AsString        := Pessoa.EmailFin;
+  Qry.ParamByName('PES_OBSERVACAO').AsString      := Pessoa.Observacao;
+
+  try
+    Qry.ExecSQL;
+   //WebApplication.CallBackResponse.AddJavaScriptToExecute(swalSuccess('Cadastro','Dados Salvos!'));
+    Result := True;
+  except
+    vResult := 'Erro na gravação dos dados pessoa';
+  end;
+
+  Qry.Free;
+end;
+
+procedure TPessoa.SetBairro(const Value: string);
+begin
+  FBairro := Value;
+end;
+
+procedure TPessoa.SetCelular(const Value: String);
+begin
+  FCelular := Value;
+end;
+
+procedure TPessoa.SetCEP(const Value: String);
+begin
+  FCEP := Value;
+end;
+
+procedure TPessoa.SetCidade(const Value: String);
+begin
+  FCidade := Value;
+end;
+
+procedure TPessoa.SetCNE(const Value: String);
+begin
+  FCNE := Value;
+end;
+
+procedure TPessoa.SetCodigo(const Value: Longint);
+begin
+  FCodigo := Value;
+end;
+
+procedure TPessoa.SetComplemento(const Value: String);
+begin
+  FComplemento := Value;
+end;
+
+procedure TPessoa.SetContato(const Value: String);
+begin
+  FContato := Value;
+end;
+
+procedure TPessoa.SetCpf(const Value: String);
+begin
+  FCpf := Value;
+end;
+
+procedure TPessoa.SetDataAlteracao(const Value: TDate);
+begin
+  FDataAlteracao := Value;
+end;
+
+procedure TPessoa.SetDataCadastro(const Value: TDate);
+begin
+  FDataCadastro := Value;
+end;
+
+procedure TPessoa.SetEmail(const Value: String);
+begin
+  FEmail := Value;
+end;
+
+procedure TPessoa.SetEmailFin(const Value: String);
+begin
+  FEmailFin := Value;
+end;
+
+procedure TPessoa.SetIBGE(const Value: String);
+begin
+  FIBGE := Value;
+end;
+
+procedure TPessoa.SetLogradouro(const Value: String);
+begin
+  FLogradouro := Value;
+end;
+
+procedure TPessoa.SetNome(const Value: String);
+begin
+  FNome := Value;
+end;
+
+procedure TPessoa.SetNumero(const Value: String);
+begin
+  FNumero := Value;
+end;
+
+procedure TPessoa.SetObservacao(const Value: String);
+begin
+  FObservacao := Value;
+end;
+
+procedure TPessoa.SetRG(const Value: String);
+begin
+  FRG := Value;
+end;
+
+procedure TPessoa.SetTelefone(const Value: String);
+begin
+  FTelefone := Value;
+end;
+
+procedure TPessoa.SetTipo(const Value: TTipoPessoa);
+begin
+  FTipo := Value;
+end;
+
+procedure TPessoa.SetUF(const Value: String);
+begin
+  FUF := Value;
+end;
+
+{
+function TPessoa_DB.Tabela_Existe(NomeTabela: string): Boolean;
+var
+  Qry : TFDQuery;
+begin
+
+  Result := False;
+
+  Qry := TFDQuery.Create(nil);
+  Qry.Connection := Conn;
+
+  Qry.SQL.Add(' SELECT table_name FROM information_schema.tables ');
+  Qry.SQL.Add(' WHERE table_schema = '''+DataBase+''' AND TABLE_NAME = '''+NomeTabela+'''');
+
+  try
+    Qry.Open;
+
+    if not Qry.IsEmpty then
+      Result := True;
+
+  except
+
+  end;
+
+  Qry.Free;
+end;
+  }
+end.

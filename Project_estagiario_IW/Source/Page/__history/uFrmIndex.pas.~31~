@@ -1,0 +1,101 @@
+unit uFrmIndex;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Padrao, IWVCLComponent,
+  IWBaseLayoutComponent, IWBaseContainerLayout, IWContainerLayout,
+  IWTemplateProcessorHTML;
+
+type
+  TFrmIndex = class(TTpadrao)
+    procedure IWAppFormCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+
+  end;
+
+var
+  FrmIndex: TFrmIndex;
+
+implementation
+
+{$R *.dfm}
+
+uses Login, uUserSessionUnit, uServerController, uFrmListaPessoa, uFrmCrudPessoa;
+
+procedure TFrmIndex.Acoes(EventParams: TStringList);
+var
+  sl: TStringList;
+  I,IdAcao, CountParam: Integer;
+  Acao, s: String;
+begin
+   sl := TStringList.Create;
+   CountParam := 0;
+
+  try
+
+    sl.StrictDelimiter := True;
+    sl.CommaText := EventParams.Values['Params'];
+    s := sl.CommaText;
+
+    CountParam := TStringList(sl).Count;
+
+    for I := 0 to pred(CountParam) do
+    begin
+      if I = 0 then
+        Acao := sl.ValueFromIndex[I];
+
+      if I = 1 then
+        IdAcao := StrToInt(sl.ValueFromIndex[I]);
+    end;
+
+    if Acao = 'Fechar' then
+    begin
+      //Self.Release;
+      TLogin := TTLogin.Create(WebApplication);
+      TLogin.Show;
+    end;
+
+    if Acao = 'Lista' then
+    begin
+      Self.Release;
+      FrmListaPessoa := TFrmListaPessoa.Create(nil);
+      FrmListaPessoa.Show;
+    end;
+
+    if Acao = 'Crud' then
+    begin
+      Self.Release;
+      FrmCrudPessoa := TFrmCrudPessoa.Create(nil);
+      FrmCrudPessoa.Show;
+    end;
+
+   {
+    if Acao = 'Home' then
+    begin
+      if not (self.Name = 'FrmIndex') then
+      begin
+        TIWAppForm(WebApplication.ActiveForm).Release;
+        TLogin.Create(WebApplication).Show;
+      end;
+
+    end; }
+
+  except
+
+  end;
+end;
+
+procedure TFrmIndex.IWAppFormCreate(Sender: TObject);
+begin
+  inherited;
+  RegisterCallBack('Acoes', Acoes);
+  UserSession.DescPageHead := 'Home';
+
+end;
+
+end.

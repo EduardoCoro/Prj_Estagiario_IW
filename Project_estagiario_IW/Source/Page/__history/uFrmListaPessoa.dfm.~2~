@@ -1,0 +1,4 @@
+inherited FrmListaPessoa: TFrmListaPessoa
+  DesignLeft = 2
+  DesignTop = 2
+end

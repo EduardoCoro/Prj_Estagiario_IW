@@ -1,0 +1,145 @@
+unit uFrmCrudFornecedor;
+
+interface
+
+uses
+  PrjEst.Classes.Fornecedor, Projt_estudos.SweetAlert2,
+
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Padrao, IWVCLComponent, IWHTMLTag,
+  IWBaseLayoutComponent, IWBaseContainerLayout, IWContainerLayout,
+  IWTemplateProcessorHTML, IWVCLBaseControl, IWBaseControl, IWBaseHTMLControl,
+  IWControl, IWCompEdit, IWCompListbox, IWCompMemo, IWCompButton,system.DateUtils,
+  IWCompLabel;
+
+type
+  TFrmCrudFornecedor = class(TTpadrao)
+    edtcodigo: TIWEdit;
+    edtdataalteracao: TIWEdit;
+    edtcadastro: TIWEdit;
+    edtNome: TIWEdit;
+    EDTCNPJ: TIWEdit;
+    edtcep: TIWEdit;
+    edtlogradouro: TIWEdit;
+    edtnumero: TIWEdit;
+    edtcidade: TIWEdit;
+    edtuf: TIWEdit;
+    edtcomplemento: TIWEdit;
+    edtbairro: TIWEdit;
+    edtTelefone: TIWEdit;
+    edtCelular: TIWEdit;
+    edtContato: TIWEdit;
+    edtEmail: TIWEdit;
+    edtemailfinanceiro: TIWEdit;
+    mObservacao: TIWMemo;
+    BTNSALVAR: TIWButton;
+    lblcodigo: TIWLabel;
+    lblDataAlteracao: TIWLabel;
+    procedure BTNSALVARHTMLTag(ASender: TObject; ATag: TIWHTMLTag);
+    procedure mObservacaoHTMLTag(ASender: TObject; ATag: TIWHTMLTag);
+    procedure IWAppFormCreate(Sender: TObject);
+    procedure BTNSALVARAsyncClick(Sender: TObject; EventParams: TStringList);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmCrudFornecedor: TFrmCrudFornecedor;
+
+implementation
+
+uses
+  uServerController;
+
+{$R *.dfm}
+
+procedure TFrmCrudFornecedor.BTNSALVARAsyncClick(Sender: TObject;
+  EventParams: TStringList);
+var
+  DB      : TFornecedorDB;
+  Fornecedor  : TFornecedor;
+  vResult : String;
+  Verifica :boolean;
+begin
+  inherited;
+  DB     := TFornecedorDB.Create(UserSession.Conexao);
+  Fornecedor :=TFornecedor.Create;
+  //WebApplication.CallBackResponse.AddJavaScriptToExecute(swalSuccess('Cadastro','Dados Salvos!'));
+  try
+    //inserção de dados
+
+
+    Fornecedor.DataCadastro := Date;
+    Fornecedor.Nome         := edtNome.Text;
+    Fornecedor.Cnpj         := EDTCNPJ.Text;
+    Fornecedor.CEP          := edtcep.Text;
+    Fornecedor.Logradouro   := edtlogradouro.Text;
+    Fornecedor.Numero       := edtnumero.Text;
+    Fornecedor.Complemento  := edtcomplemento.Text;
+    Fornecedor.Bairro       := edtbairro.Text;
+    Fornecedor.Cidade       := edtcidade.Text;
+    Fornecedor.UF           := edtuf.Text;
+    Fornecedor.Telefone     := edtTelefone.Text;
+    Fornecedor.Celular      := edtCelular.Text;
+    Fornecedor.Contato      := edtContato.Text;
+    Fornecedor.Email        := edtEmail.Text;
+    Fornecedor.EmailFin     := edtemailfinanceiro.Text;
+    Fornecedor.Observacao   := mObservacao.Text;
+
+
+    //salvar no banco
+
+    if not DB.SetFornecedor(Fornecedor, vResult) then
+      WebApplication.ShowMessage(vResult);
+
+    //if Pessoa.Nome <> ''then
+    WebApplication.CallBackResponse.AddJavaScriptToExecute(swalSuccess('Cadastro','Dados Salvos!'));
+
+  except
+    DB.Free;
+    Fornecedor.Free;
+
+  end;
+end;
+
+procedure TFrmCrudFornecedor.BTNSALVARHTMLTag(ASender: TObject; ATag: TIWHTMLTag);
+begin
+  inherited;
+  ATag.Add(' type="button" class="btn btn-success" style="float: right;"');
+end;
+
+procedure TFrmCrudFornecedor.IWAppFormCreate(Sender: TObject);
+var
+  DB      : TFornecedorDB;
+  Fornecedor  : TFornecedor;
+  vResult : String;
+begin
+  inherited;
+  DB     := TFornecedorDB.Create(UserSession.Conexao);
+  Fornecedor := TFornecedor.Create;
+  try
+    //trasferi pessoa - seleciona por id
+    //Pessoa := DB.GetFornecedor(1,vResult);
+    //edtNome.Text := Pessoa.Nome;
+    edtcadastro.Text := DateToStr(Date());
+
+
+  finally
+    DB.Free;
+    Fornecedor.Free;
+
+  end;
+
+  UserSession.DescPageHead := 'Cadastro de Fornecedor';
+  UserSession.AcaoPageHead := 'Fornecedor';
+end;
+
+procedure TFrmCrudFornecedor.mObservacaoHTMLTag(ASender: TObject; ATag: TIWHTMLTag);
+begin
+  inherited;
+  ATag.Add(' rows="3" ');
+end;
+
+end.

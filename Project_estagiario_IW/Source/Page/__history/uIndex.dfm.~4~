@@ -1,0 +1,5 @@
+inherited TIndex: TTIndex
+  Title = 'Tela Inicial'
+  DesignLeft = 2
+  DesignTop = 2
+end

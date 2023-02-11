@@ -1,0 +1,114 @@
+unit uUserSessionUnit;
+
+{
+  This is a DataModule where you can add components or declare fields that are specific to 
+  ONE user. Instead of creating global variables, it is better to use this datamodule. You can then
+  access the it using UserSession.
+}
+interface
+
+uses
+  Proj_estudos.App,
+
+  IWUserSessionBase, SysUtils, Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
+  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.VCLUI.Wait,
+  Data.DB, FireDAC.Comp.Client, FireDAC.Phys.MySQLDef, FireDAC.Phys.MySQL,
+  FireDAC.Phys.MSSQLDef, FireDAC.Phys.ODBCBase, FireDAC.Phys.MSSQL;
+
+type
+  TIWUserSession = class(TIWUserSessionBase)
+    Conexao: TFDConnection;
+    MSSQL: TFDPhysMSSQLDriverLink;
+    procedure IWUserSessionBaseCreate(Sender: TObject);
+    procedure ConexaoBeforeConnect(Sender: TObject);
+  private
+    { Private declarations }
+    FUserEmail: String;
+    FUserId: LongInt;
+    FUserLogado: String;
+    FDescPageHead: String;
+    FAcaoPageHead: String;
+    FID_Cadastro: LongInt;
+
+    procedure SetUserEmail(const Value: String);
+    procedure SetUserId(const Value: LongInt);
+    procedure SetUserLogado(const Value: String);
+
+    procedure SetDescPageHead(const Value: String);
+    procedure SetAcaoPageHead(const Value: String);
+    procedure SetID_Cadastro(const Value: LongInt);
+  public
+    { Public declarations }
+
+    Property UserId:LongInt read FUserId write SetUserId;
+    Property UserLogado:String read FUserLogado write SetUserLogado;
+    Property UserEmail:String read FUserEmail write SetUserEmail;
+
+    Property DescPageHead :string read FDescPageHead write SetDescPageHead;
+    Property AcaoPageHead :string read FAcaoPageHead write SetAcaoPageHead;
+
+
+  end;
+
+implementation
+
+{$R *.dfm}
+uses uServerController;
+
+
+
+procedure TIWUserSession.ConexaoBeforeConnect(Sender: TObject);
+begin
+  try
+      //Passa os parâmetros para o objeto Conexao
+      Conexao.Connected := False;
+      Conexao.LoginPrompt := False;
+      Conexao.Params.Clear;
+      Conexao.Params.Add('server='  + host);
+      Conexao.Params.Add('user_name=' + UserDataBase);
+      Conexao.Params.Add('password='  + PassDataBase);
+      Conexao.Params.Add('DataBase='  + DataBase);
+      Conexao.Params.Add('DriverID='  + Driver);
+
+  except
+
+  end;
+end;
+
+procedure TIWUserSession.IWUserSessionBaseCreate(Sender: TObject);
+begin
+  FAcaoPageHead := '';
+end;
+
+procedure TIWUserSession.SetAcaoPageHead(const Value: String);
+begin
+  FAcaoPageHead := Value;
+end;
+
+procedure TIWUserSession.SetDescPageHead(const Value: String);
+begin
+  FDescPageHead := Value;
+end;
+
+procedure TIWUserSession.SetID_Cadastro(const Value: LongInt);
+begin
+  FID_Cadastro := Value;
+end;
+
+procedure TIWUserSession.SetUserEmail(const Value: String);
+begin
+  FUserEmail := Value;
+end;
+
+procedure TIWUserSession.SetUserId(const Value: LongInt);
+begin
+  FUserId := Value;
+end;
+
+procedure TIWUserSession.SetUserLogado(const Value: String);
+begin
+  FUserLogado := Value;
+end;
+
+end.

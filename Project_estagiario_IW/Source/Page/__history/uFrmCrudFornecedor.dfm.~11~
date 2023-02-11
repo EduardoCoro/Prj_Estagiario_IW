@@ -1,0 +1,289 @@
+inherited FrmCrudFornecedor: TFrmCrudFornecedor
+  Width = 644
+  Height = 507
+  Title = 'Cadastro de Fornecedor'
+  ExplicitWidth = 644
+  ExplicitHeight = 507
+  DesignLeft = 2
+  DesignTop = 2
+  object edtcodigo: TIWEdit [0]
+    Left = 32
+    Top = 40
+    Width = 161
+    Height = 22
+    Visible = False
+    Css = 'form-control'
+    StyleRenderOptions.RenderBorder = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'edtcodigo'
+    SubmitOnAsyncEvent = True
+  end
+  object edtdataalteracao: TIWEdit [1]
+    Left = 224
+    Top = 40
+    Width = 161
+    Height = 22
+    Css = 'form-control data'
+    StyleRenderOptions.RenderBorder = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'IWEdit1'
+    SubmitOnAsyncEvent = True
+  end
+  object edtcadastro: TIWEdit [2]
+    Left = 416
+    Top = 40
+    Width = 161
+    Height = 22
+    Css = 'form-control data'
+    StyleRenderOptions.RenderBorder = False
+    Editable = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'IWEdit1'
+    SubmitOnAsyncEvent = True
+  end
+  object edtNome: TIWEdit [3]
+    Left = 32
+    Top = 80
+    Width = 353
+    Height = 22
+    Css = 'form-control'
+    StyleRenderOptions.RenderBorder = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'edtcodigo'
+    SubmitOnAsyncEvent = True
+  end
+  object EDTCNPJ: TIWEdit [4]
+    Left = 32
+    Top = 120
+    Width = 161
+    Height = 22
+    OnHTMLTag = EDTCNPJHTMLTag
+    Css = 'form-control '
+    StyleRenderOptions.RenderBorder = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'edtcodigo'
+    SubmitOnAsyncEvent = True
+  end
+  object edtcep: TIWEdit [5]
+    Left = 32
+    Top = 168
+    Width = 161
+    Height = 22
+    Css = 'form-control cep'
+    StyleRenderOptions.RenderBorder = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'edtcodigo'
+    SubmitOnAsyncEvent = True
+  end
+  object edtlogradouro: TIWEdit [6]
+    Left = 224
+    Top = 168
+    Width = 161
+    Height = 22
+    Css = 'form-control'
+    StyleRenderOptions.RenderBorder = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'edtcodigo'
+    SubmitOnAsyncEvent = True
+  end
+  object edtnumero: TIWEdit [7]
+    Left = 416
+    Top = 168
+    Width = 161
+    Height = 22
+    Css = 'form-control'
+    StyleRenderOptions.RenderBorder = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'edtcodigo'
+    SubmitOnAsyncEvent = True
+  end
+  object edtcidade: TIWEdit [8]
+    Left = 32
+    Top = 248
+    Width = 161
+    Height = 22
+    Css = 'form-control'
+    StyleRenderOptions.RenderBorder = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'edtcodigo'
+    SubmitOnAsyncEvent = True
+  end
+  object edtuf: TIWEdit [9]
+    Left = 224
+    Top = 248
+    Width = 161
+    Height = 22
+    Css = 'form-control'
+    StyleRenderOptions.RenderBorder = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'edtcodigo'
+    MaxLength = 2
+    SubmitOnAsyncEvent = True
+  end
+  object edtcomplemento: TIWEdit [10]
+    Left = 32
+    Top = 208
+    Width = 313
+    Height = 22
+    Css = 'form-control'
+    StyleRenderOptions.RenderBorder = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'edtcodigo'
+    SubmitOnAsyncEvent = True
+  end
+  object edtbairro: TIWEdit [11]
+    Left = 376
+    Top = 208
+    Width = 201
+    Height = 22
+    Css = 'form-control'
+    StyleRenderOptions.RenderBorder = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'edtcodigo'
+    SubmitOnAsyncEvent = True
+  end
+  object edtTelefone: TIWEdit [12]
+    Left = 32
+    Top = 296
+    Width = 161
+    Height = 22
+    Css = 'form-control ddd_tel'
+    StyleRenderOptions.RenderBorder = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'edtTelefone'
+    SubmitOnAsyncEvent = True
+    DataType = stTel
+  end
+  object edtCelular: TIWEdit [13]
+    Left = 224
+    Top = 296
+    Width = 161
+    Height = 22
+    Css = 'form-control ddd_tel'
+    StyleRenderOptions.RenderBorder = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'IWEdit3'
+    SubmitOnAsyncEvent = True
+    DataType = stTel
+  end
+  object edtContato: TIWEdit [14]
+    Left = 416
+    Top = 296
+    Width = 161
+    Height = 22
+    Css = 'form-control ddd_tel'
+    StyleRenderOptions.RenderBorder = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'IWEdit3'
+    SubmitOnAsyncEvent = True
+  end
+  object edtEmail: TIWEdit [15]
+    Left = 32
+    Top = 344
+    Width = 161
+    Height = 22
+    Css = 'form-control'
+    StyleRenderOptions.RenderBorder = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'IWEdit3'
+    SubmitOnAsyncEvent = True
+    DataType = stEmail
+  end
+  object edtemailfinanceiro: TIWEdit [16]
+    Left = 224
+    Top = 344
+    Width = 161
+    Height = 22
+    Css = 'form-control'
+    StyleRenderOptions.RenderBorder = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'IWEdit3'
+    SubmitOnAsyncEvent = True
+    DataType = stEmail
+  end
+  object mObservacao: TIWMemo [17]
+    Left = 32
+    Top = 372
+    Width = 545
+    Height = 70
+    OnHTMLTag = mObservacaoHTMLTag
+    Css = 'form-control'
+    StyleRenderOptions.RenderBorder = False
+    BGColor = clNone
+    Editable = True
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    InvisibleBorder = False
+    HorizScrollBar = False
+    VertScrollBar = True
+    Required = False
+    SubmitOnAsyncEvent = True
+    FriendlyName = 'mObservacao'
+  end
+  object BTNSALVAR: TIWButton [18]
+    Left = 457
+    Top = 465
+    Width = 120
+    Height = 30
+    OnHTMLTag = BTNSALVARHTMLTag
+    Caption = 'Salvar'
+    Color = clBtnFace
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    FriendlyName = 'BTNSALVAR'
+    OnAsyncClick = BTNSALVARAsyncClick
+  end
+  object lblcodigo: TIWLabel [19]
+    Left = 32
+    Top = 18
+    Width = 42
+    Height = 16
+    Visible = False
+    Font.Color = clNone
+    Font.Size = 10
+    Font.Style = []
+    HasTabOrder = False
+    FriendlyName = 'lblcodigo'
+    Caption = 'C'#243'digo'
+  end
+  inherited TPS: TIWTemplateProcessorHTML
+    Left = 592
+    Top = 136
+  end
+end

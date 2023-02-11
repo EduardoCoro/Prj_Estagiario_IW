@@ -1,0 +1,13 @@
+unit Projt_estudos.App;
+
+interface
+  const
+    AppName = 'Prj Estudos'
+    SoftHouse = 'Focus';
+    UpdateVersion = '25/11/2021';
+    Version = '0.0.1.0';
+
+
+implementation
+
+end.

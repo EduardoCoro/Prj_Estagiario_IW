@@ -1,0 +1,10 @@
+object IWUserSession: TIWUserSession
+  OldCreateOrder = False
+  OnCreate = IWUserSessionBaseCreate
+  Height = 347
+  Width = 556
+  object Conexao: TFDConnection
+    Left = 136
+    Top = 88
+  end
+end
